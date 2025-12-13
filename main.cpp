@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <windows.h>
 #include <filesystem>
-#include <shlobj.h>
 
 using namespace std;
 
@@ -71,41 +70,6 @@ string openFile(){
     return "";
 }
 
-std::string selectFolder() {
-    // Initialize COM
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (FAILED(hr)) {
-        cout << "Failed to initialize COM" << endl;
-        return "";
-    }
-    
-    wchar_t path[MAX_PATH];  // Changed to wchar_t
-    
-    BROWSEINFO bi = { 0 };
-    bi.lpszTitle = L"Select a folder";  // Added L prefix for wide string
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
-    
-    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    
-    if (pidl != 0) {
-        // Get the path from the id list
-        if (SHGetPathFromIDList(pidl, path)) {
-            // Free memory
-            CoTaskMemFree(pidl);
-            CoUninitialize();
-            
-            // Convert wide string to narrow string
-            char narrowPath[MAX_PATH];
-            wcstombs(narrowPath, path, MAX_PATH);
-            return std::string(narrowPath);
-        }
-        CoTaskMemFree(pidl);
-    }
-    
-    CoUninitialize();
-    return "";
-}
-
 
 bool deleteFile(const string& filepath) {
     if (filepath.empty()) {
@@ -144,33 +108,36 @@ bool deleteFile(const string& filepath) {
 }
 
 bool addFile() {
-    cout << "Select a file directory to add this file in: " << endl;
-    string fileDirectory = selectFolder();
+    // Select source file
+    cout << "Select a directory to add a file: " << endl;
+    string sourceFile = openFile();
     
-    if (fileDirectory.empty()) {
-        cout << "No directory selected." << endl;
+    if (sourceFile.empty()) {
+        cout << "No file selected." << endl;
         return false;
     }
 
-    if (!filesystem::is_directory(fileDirectory)) {
-        cout << "Error: Please select a directory, not a file!" << endl;
+    // Check if source file exists
+    if (!filesystem::exists(sourceFile)) {
+        cout << "Error: Source file does not exist!" << endl;
         return false;
     }
 
+    // Get destination path from user
+    cout << "Enter the destination path (including filename):" << endl;
+    cout << "Example: C:\\Users\\YourName\\Documents\\newfile.txt" << endl;
+    string destPath;
+    cin.ignore(); // Clear the input buffer
+    getline(cin, destPath);
 
-    cout << "Enter the name of the file to add: " << endl;
-    string fileName;
-    cin >> fileName;
-
-    if (fileName.empty()) {
-        cout << "Error: File name cannot be empty!" << endl;
+    if (destPath.empty()) {
+        cout << "Error: Destination path cannot be empty!" << endl;
         return false;
     }
 
-    filesystem::path destPath = filesystem::path(fileDirectory) / fileName;
-
+    // Check if destination already exists
     if (filesystem::exists(destPath)) {
-        cout << "Warning: File already exists. Overwrite? (y/n): ";
+        cout << "Warning: File already exists at destination. Overwrite? (y/n): ";
         char confirm;
         cin >> confirm;
         if (confirm != 'y' && confirm != 'Y') {
@@ -179,20 +146,39 @@ bool addFile() {
         }
     }
 
-    try {
-        ofstream newFile(destPath);
-        if (!newFile) {
-            cout << "Error: Failed to create file!" << endl;
+    // Ensure destination directory exists
+    filesystem::path destPathObj(destPath);
+    filesystem::path destDir = destPathObj.parent_path();
+    
+    if (!destDir.empty() && !filesystem::exists(destDir)) {
+        cout << "Destination directory does not exist. Create it? (y/n): ";
+        char confirm;
+        cin >> confirm;
+        if (confirm == 'y' || confirm == 'Y') {
+            try {
+                filesystem::create_directories(destDir);
+                cout << "Directory created successfully." << endl;
+            } catch (const filesystem::filesystem_error& e) {
+                cout << "Error creating directory: " << e.what() << endl;
+                return false;
+            }
+        } else {
+            cout << "Operation cancelled." << endl;
             return false;
         }
-        
-        cout << "File created!" << endl;
-
-    } catch (const exception& e) {
-        cout << "Error creating file: " << e.what() << endl;
-        return false;
     }
 
+    // Copy the file
+    try {
+        filesystem::copy_file(sourceFile, destPath, filesystem::copy_options::overwrite_existing);
+        cout << "File added successfully!" << endl;
+        cout << "From: " << sourceFile << endl;
+        cout << "To: " << destPath << endl;
+        return true;
+    } catch (const filesystem::filesystem_error& e) {
+        cout << "Error copying file: " << e.what() << endl;
+        return false;
+    }
 }
 
 int main()
