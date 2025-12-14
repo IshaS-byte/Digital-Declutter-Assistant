@@ -50,6 +50,12 @@ button {
     font-weight: bold;
     border-radius: 10px;
     box-shadow: 0 0.5rem 0.5rem #af886f;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    opacity: 0.9;
 }
 
 .directory-label {
@@ -58,10 +64,230 @@ button {
     font-weight: bold;
 }
 
+.directory-input {
+    width: 400px;
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #999;
+}
+
+.button-group {
+    margin: 20px 0;
+}
+
+.add-file-section {
+    margin: 20px 0;
+}
+
+.file-input {
+    padding: 5px;
+    width: 300px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #999;
+}
+
+/* File Table Styles */
+.file-table-container {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.file-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header {
+    border-bottom: 2px solid #ccc;
+}
+
+.table-header th {
+    padding: 10px;
+    text-align: left;
+}
+
+.table-row {
+    border-bottom: 1px solid #eee;
+}
+
+.table-row td {
+    padding: 10px;
+}
+
+.file-name {
+    text-align: left;
+}
+
+.file-type {
+    text-align: left;
+}
+
+.size-column {
+    text-align: right;
+}
+
+.actions-column {
+    text-align: center;
+}
+
+.delete-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #CFE1B1;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: auto;
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.3);
+    border: 2px solid black;
+}
+
+.modal-header {
+    background-color: #E1DBB1;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 2px solid black;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #999;
+    box-sizing: border-box;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.scan-button-group {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.scan-button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #B1E1CF;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+}
+
+.scan-button.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Results Styles */
 .results {
     background-color: white;
     padding: 15px;
     margin-bottom: 20px;
     border: 1px solid #999;
     border-radius: 10px;
+    align-items: center;
+}
+
+.results h3 {
+    margin-top: 0;
+}
+
+.sample-files-label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.file-list {
+    max-height: 150px;
+    overflow: auto;
+    font-size: 12px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+.file-list-item {
+    margin-bottom: 5px;
+}
+
+.file-list-more {
+    font-style: italic;
+}
+
+.delete-all-button {
+    width: 93%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 15px;
+    background-color: #E1B1B1;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+}
+
+.delete-all-button.disabled {
+    background-color: #E1B1B1;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.close-button {
+    width: 94%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #E1C3B1;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+}
+
+.close-button.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
